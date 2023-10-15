@@ -3,8 +3,9 @@ import math
 from matplotlib import pyplot
 import numpy
 import algos.utils
-import algos.numerical
+import algos.numerical.diff_integration
 import algos.search
+import algos.search.stochastic.random
 
 # Structures Imports
 from algos.array import Array
@@ -23,24 +24,24 @@ print("######################################## \n")
 ###########################################################################
 # TODO: ORGANIZE UTILS AND  BASIC STRUCTURES
 # VARIABLES AND STRUCTURES FOR TESTING ALGOS
-array = Array(3)
-array.set_element(0, 'first')
-array.render()
-
-g = Graph(5)
-g.add_edge(0, 1)
-g.add_edge(1, 2)
-g.add_edge(2, 3)
-g.add_edge(3, 4)
-g.render()
-
-# TODO: CHECK THIS SEARCH RESULT AND PATH
-dfs = algos.search.DepthFirstSearch(g, 4)
-is_path = dfs.has_path_to(g, 3)
-path = dfs.path_to(g, 4)
-print(path.elements)
-print(is_path)
-
+# array = Array(3)
+# array.set_element(0, 'first')
+# array.render()
+#
+# g = Graph(5)
+# g.add_edge(0, 1)
+# g.add_edge(1, 2)
+# g.add_edge(2, 3)
+# g.add_edge(3, 4)
+# g.render()
+#
+# # TODO: CHECK THIS SEARCH RESULT AND PATH
+# dfs = algos.search.DepthFirstSearch(g, 4)
+# is_path = dfs.has_path_to(g, 3)
+# path = dfs.path_to(g, 4)
+# print(path.elements)
+# print(is_path)
+#
 ###########################################################################
 
 
@@ -60,6 +61,15 @@ print(is_path)
 #
 # print("########## SEARCH INDEX RESULT:", l, ls, lo, b, bb, bl, br, r)
 # print(cl[18])
+
+# Random Search
+# problem_size = 2
+# search_space = [-5, 5]
+# max_iter = 100
+#
+# best = algos.search.stochastic.random.random_search(search_space, max_iter)
+# print('Done. Best Solution: c = ', best['cost'], 'v = ', best['vector'])
+
 ###########################################################################
 
 
@@ -85,10 +95,10 @@ print(is_path)
 
 # Romberg
 # 1.a
-f_I = lambda x: (x ** 2) * math.log(x)
-n_I = 10
-a_I = 1
-b_I = 1.5
+f_I = lambda x: math.sin(x)
+n_I = 6
+a_I = 0
+b_I = math.pi
 
 # List of polynomials coefficients
 # p = (-10, 0, 4, 1)
@@ -201,8 +211,15 @@ b_I = 1.5
 # rule = algos.numerical.composite_simpsons_rule(f_I, a_I, b_I, n_I)
 
 # Romberg Method
-# TODO: TEST METHOD WITH A EXAMPLE
-romberg = algos.numerical.romberg(f_I, a_I, b_I, n_I)
+# romberg = algos.numerical.diff_integration.romberg(f_I, a_I, b_I, n_I)
+
+# Adaptive Quadrature
+f = lambda x: (100 / math.pow(x, 2)) * math.sin(10.0 / x)
+a = 1.0
+b = 3.0
+tol = 10 ^ -14
+n = 10
+adapt = algos.numerical.diff_integration.adaptive_quadrature(f, a, b, n, tol)
 ###########################################################################
 
 print("########## END MAIN CLIENT ##########")

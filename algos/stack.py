@@ -6,7 +6,9 @@
 #   Write:
 ###############################################
 class Stack(object):
-    def __init__(self, elements=list()):
+    def __init__(self, elements=None):
+        if elements is None:
+            elements = list()
         self.elements = elements
 
     def size(self):

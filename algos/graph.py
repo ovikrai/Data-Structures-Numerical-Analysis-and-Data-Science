@@ -1,20 +1,19 @@
 from algos.bag import Bag
+from algos.matrix import Matrix
 
 
+# TODO: CHECK IMPLEMENTATION
 class Graph(object):
     _V: int
     _E: int
-    _adj: list
+    _adj: Matrix
 
     def __init__(self, V: int):
         if V < 0:
             raise Exception('Number of vertices must be non-negative')
         self._V = V
         self._E = 0
-        self._adj = [None] * V
-
-        for v in range(0, V):
-            self._adj[v] = Bag()
+        self._adj = Matrix(V, 'int')
 
     def vertex_count(self) -> int:
         return self._V
@@ -29,17 +28,16 @@ class Graph(object):
     def add_edge(self, v: int, w: int):
         self.validate_vertex(v)
         self.validate_vertex(w)
-        self._E = self._E + 1
-        self._adj[v].add(w)
-        self._adj[w].add(v)
+    # TODO
 
     def adj(self, v: int):
         self.validate_vertex(v)
-        return self._adj[v]
+        return self._adj.get_object()
 
-    def degree(self, v: int):
-        self.validate_vertex(v)
-        return self._adj[v].size()
+    # TODO: IMPLEMENT
+    # def degree(self, v: int):
+    #     self.validate_vertex(v)
+    #     pass
 
     def render(self):
         print('########## START: GRAPH RENDERING REPRESENTATION #########')
