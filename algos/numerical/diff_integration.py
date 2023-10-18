@@ -92,7 +92,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     L = []
 
     # INIT LISTS
-    for k in range(1, n):
+    for k in range(0, n):
         TOL.append(0)
         A.append(0)
         H.append(0)
@@ -134,7 +134,9 @@ def adaptive_quadrature(f, a, b, n, tol):
         v8 = L[i]
 
         # STEP 4: DELETE THE LEVEL
+        print('Before Substracting', i)
         i = i - 1
+        print('Before Substracting', i)
 
         if abs(S1 + S2 + v7) < v6:
             APP = APP + (S1 + S2)
@@ -143,11 +145,15 @@ def adaptive_quadrature(f, a, b, n, tol):
             if v8 >= n:
                 # PROCEDURE FAILS
                 print('LEVEL EXCEEDED')
+                break
             else:
                 # ADD ONE LEVEL
+                print('Before adding', i)
                 i = i + 1
+                print('After adding', i)
+
                 # DATA FOR RIGHT HALF SUB-INTERVAL
-                A[i] = (v1 + v5)
+                A[i] = v1 + v5
                 FA[i] = v3
                 FC[i] = FE
                 FB[i] = v4
@@ -157,14 +163,17 @@ def adaptive_quadrature(f, a, b, n, tol):
                 L[i] = v8 + 1
 
                 # ADD ONE LEVEL
+                print('Before adding', i)
                 i = i + 1
+                print('After adding', i)
+
                 # DATA FOR LEFT HALF SUB-INTERVAL
                 A[i] = v1
                 FA[i] = v2
                 FC[i] = FD
                 FB[i] = v3
                 H[i] = H[i - 1]
-                TOL[i] = v8 + 1
+                TOL[i] = TOL[i -1]
                 S[i] = S1
                 L[i] = L[i - 1]
 

@@ -12,3 +12,7 @@ run:
 	./build/main
 
 build: compile link run
+
+
+run-py:
+	python3 main.py
