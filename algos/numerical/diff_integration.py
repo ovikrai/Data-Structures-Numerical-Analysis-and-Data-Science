@@ -105,7 +105,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     # ADD INIT VALUES
     TOL[i] = 10.0 * tol
     A[i] = a
-    H[i] = ((b - a) / 2)
+    H[i] = (b - a) / 2
     FA[i] = f(a)
     FC[i] = f(a + H[i])
     FB[i] = f(b)
@@ -116,7 +116,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     while i > 0:
         print('A:', A[i])
         print('H:', H[i])
-        FD = f((A[i] + H[i]) / 2)
+        FD = f(A[i] + H[i] / 2)
         FE = f(A[i] + 3 * H[i] / 2)
 
         # Approximations from Simpson's method for halves of sub-intervals
@@ -163,7 +163,7 @@ def adaptive_quadrature(f, a, b, n, tol):
                 FA[i] = v2
                 FC[i] = FD
                 FB[i] = v3
-                H[i] = H
+                H[i] = H[i - 1]
                 TOL[i] = v8 + 1
                 S[i] = S1
                 L[i] = L[i - 1]

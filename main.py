@@ -217,9 +217,10 @@ b_I = math.pi
 f = lambda x: (100 / math.pow(x, 2)) * math.sin(10.0 / x)
 a = 1.0
 b = 3.0
-tol = 10 ^ -14
-n = 10
+tol = 10 ^ -4
+n = 4
 adapt = algos.numerical.diff_integration.adaptive_quadrature(f, a, b, n, tol)
+print(adapt)
 ###########################################################################
 
 print("########## END MAIN CLIENT ##########")
