@@ -77,11 +77,10 @@ def romberg(f, a: float, b: float, n: int):
 
 
 # ------------------- ADAPTIVE QUADRATURE ----------------- #
-# TODO: NUMERIAL ALGOS
 def adaptive_quadrature(f, a, b, n, tol):
     # STEP 1: SET VARIABLES
     APP = 0
-    i = 1
+    i = 0
     TOL = []
     A = []
     H = []
@@ -92,30 +91,29 @@ def adaptive_quadrature(f, a, b, n, tol):
     L = []
 
     # INIT LISTS
-    for k in range(0, n):
-        TOL.append(0)
-        A.append(0)
-        H.append(0)
-        FA.append(0)
-        FC.append(0)
-        FB.append(0)
-        S.append(0)
-        L.append(0)
+    # for k in range(1, n):
+    #     TOL.append(0)
+    #     A.append(0)
+    #     H.append(0)
+    #     FA.append(0)
+    #     FC.append(0)
+    #     FB.append(0)
+    #     S.append(0)
+    #     L.append(0)
 
     # ADD INIT VALUES
-    TOL[i] = 10.0 * tol
-    A[i] = a
-    H[i] = (b - a) / 2
-    FA[i] = f(a)
-    FC[i] = f(a + H[i])
-    FB[i] = f(b)
-    S[i] = (H[i] * (FA[i] + 4.0 * FC[i] + FB[i]) / 3.0)
-    L[i] = 1.0
+    TOL.append(10.0 * tol)
+    A.append(a)
+    H.append((b - a) / 2)
+    FA.append(f(a))
+    FC.append(f(a + H[i]))
+    FB.append(f(b))
+    S.append(H[i] * (FA[i] + 4.0 * FC[i] + FB[i]) / 3.0)
+    L.append(1.0)
 
-    # TODO: COMPLETE THE ALGO...
-    while i > 0:
-        print('A:', A[i])
-        print('H:', H[i])
+    # STEP 2
+    while i >= 0:
+        # STEP 3
         FD = f(A[i] + H[i] / 2)
         FE = f(A[i] + 3 * H[i] / 2)
 
@@ -133,14 +131,15 @@ def adaptive_quadrature(f, a, b, n, tol):
         v7 = S[i]
         v8 = L[i]
 
+
         # STEP 4: DELETE THE LEVEL
         print('Before Substracting', i)
         i = i - 1
         print('Before Substracting', i)
 
-        if abs(S1 + S2 + v7) < v6:
+        # STEP 5
+        if abs(S1 + S2 - v7) < v6:
             APP = APP + (S1 + S2)
-
         else:
             if v8 >= n:
                 # PROCEDURE FAILS
@@ -153,14 +152,14 @@ def adaptive_quadrature(f, a, b, n, tol):
                 print('After adding', i)
 
                 # DATA FOR RIGHT HALF SUB-INTERVAL
-                A[i] = v1 + v5
-                FA[i] = v3
-                FC[i] = FE
-                FB[i] = v4
-                H[i] = v5 / 2
-                TOL[i] = v6 / 2
-                S[i] = S2
-                L[i] = v8 + 1
+                A.append(v1 + v5)
+                FA.append(v3)
+                FC.append(FE)
+                FB.append(v4)
+                H.append(v5 / 2)
+                TOL.append(v6 / 2)
+                S.append(S2)
+                L.append(v8 + 1)
 
                 # ADD ONE LEVEL
                 print('Before adding', i)
@@ -168,14 +167,14 @@ def adaptive_quadrature(f, a, b, n, tol):
                 print('After adding', i)
 
                 # DATA FOR LEFT HALF SUB-INTERVAL
-                A[i] = v1
-                FA[i] = v2
-                FC[i] = FD
-                FB[i] = v3
-                H[i] = H[i - 1]
-                TOL[i] = TOL[i -1]
-                S[i] = S1
-                L[i] = L[i - 1]
+                A.append(v1)
+                FA.append(v2)
+                FC.append(FD)
+                FB.append(v3)
+                H.append(H[i - 1])
+                TOL.append(TOL[i -1])
+                S.append(S1)
+                L.append(L[i - 1])
 
     # APP APPROXIMATES INTEGRAL TO WITHIN TOL
     return APP
