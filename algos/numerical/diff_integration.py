@@ -77,10 +77,10 @@ def romberg(f, a: float, b: float, n: int):
 
 
 # ------------------- ADAPTIVE QUADRATURE ----------------- #
+# TODO: CHECK LOGIC
 def adaptive_quadrature(f, a, b, n, tol):
     # STEP 1: SET VARIABLES
     APP = 0
-    i = 0
     TOL = []
     A = []
     H = []
@@ -90,18 +90,18 @@ def adaptive_quadrature(f, a, b, n, tol):
     S = []
     L = []
 
-    # INIT LISTS
-    # for k in range(1, n):
-    #     TOL.append(0)
-    #     A.append(0)
-    #     H.append(0)
-    #     FA.append(0)
-    #     FC.append(0)
-    #     FB.append(0)
-    #     S.append(0)
-    #     L.append(0)
+    # Index fix i = 0
+    TOL.append(0)
+    A.append(0)
+    H.append(0)
+    FA.append(0)
+    FC.append(0)
+    FB.append(0)
+    S.append(0)
+    L.append(0)
 
-    # ADD INIT VALUES
+    # ADD INIT VALUES i = 1
+    i = 1
     TOL.append(10.0 * tol)
     A.append(a)
     H.append((b - a) / 2)
@@ -112,7 +112,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     L.append(1.0)
 
     # STEP 2
-    while i >= 0:
+    while i > 0:
         # STEP 3
         FD = f(A[i] + H[i] / 2)
         FE = f(A[i] + 3 * H[i] / 2)
