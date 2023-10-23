@@ -6,7 +6,7 @@ import algos.utils
 import algos.numerical.diff_integration
 import algos.search
 import algos.search.stochastic.random
-
+import scipy
 # Structures Imports
 from algos.array import Array
 from algos.list import List
@@ -214,13 +214,19 @@ b_I = math.pi
 # romberg = algos.numerical.diff_integration.romberg(f_I, a_I, b_I, n_I)
 
 # Adaptive Quadrature
-f = lambda x: (100 / math.pow(x, 2)) * math.sin(10.0 / x)
+f = lambda x: (100 / numpy.power(x, 2)) * numpy.sin(10.0 / x)
 a = 1.0
 b = 3.0
-tol = 10 ^ -4
+tol = 0.0004
 n = 4
-adapt = algos.numerical.diff_integration.adaptive_quadrature(f, a, b, n, tol)
+
+adapt = algos.numerical.diff_integration.quad_asr(f, a, b, tol)
+# adapt = algos.numerical.diff_integration.(f, a, b, n, tol)
+# adapt = scipy.integrate.quadrature(f, a, b)
+
 print(adapt)
+
+
 ###########################################################################
 
 print("########## END MAIN CLIENT ##########")

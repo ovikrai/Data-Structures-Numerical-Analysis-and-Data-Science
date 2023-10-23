@@ -1,6 +1,8 @@
 from algos.utils import Matrix, MatrixNull
 import numpy
-
+import math
+import collections
+import scipy
 
 # ------------------- COMPOSITE SIMPSONS RULE METHOD ----------------- #
 # To Approximate the integral I of function f
@@ -90,7 +92,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     S = []
     L = []
 
-    # Index fix i = 0
+    # ADD INIT VALUES i = 0
     TOL.append(0)
     A.append(0)
     H.append(0)
@@ -100,6 +102,7 @@ def adaptive_quadrature(f, a, b, n, tol):
     S.append(0)
     L.append(0)
 
+
     # ADD INIT VALUES i = 1
     i = 1
     TOL.append(10.0 * tol)
@@ -108,18 +111,18 @@ def adaptive_quadrature(f, a, b, n, tol):
     FA.append(f(a))
     FC.append(f(a + H[i]))
     FB.append(f(b))
-    S.append(H[i] * (FA[i] + 4.0 * FC[i] + FB[i]) / 3.0)
+    S.append(H[i] * (FA[i] + (4.0 * FC[i]) + FB[i]) / 3.0)
     L.append(1.0)
 
     # STEP 2
     while i > 0:
         # STEP 3
-        FD = f(A[i] + H[i] / 2)
-        FE = f(A[i] + 3 * H[i] / 2)
+        FD = f(A[i] + (H[i] / 2))
+        FE = f(A[i] + (3 * (H[i] / 2)))
 
         # Approximations from Simpson's method for halves of sub-intervals
-        S1 = H[i] * (FA[i] + 4 * FD + FC[i]) / 6
-        S2 = H[i] * (FC[i] + 4 * FE + FB[i]) / 6
+        S1 = H[i] * (FA[i] + (4 * FD) + FC[i]) / 6.0
+        S2 = H[i] * (FC[i] + (4 * FE) + FB[i]) / 6.0
 
         # SAVE DATA AT THIS LEVEL
         v1 = A[i]
@@ -131,15 +134,17 @@ def adaptive_quadrature(f, a, b, n, tol):
         v7 = S[i]
         v8 = L[i]
 
+        print('variables: ',i,v1,v2,v3,v4,v5,v6,v7,v8)
+        print('APP, STEP 3:', APP)
+
 
         # STEP 4: DELETE THE LEVEL
-        print('Before Substracting', i)
         i = i - 1
-        print('Before Substracting', i)
 
         # STEP 5
         if abs(S1 + S2 - v7) < v6:
             APP = APP + (S1 + S2)
+            print('APP, STEP 5:', APP)
         else:
             if v8 >= n:
                 # PROCEDURE FAILS
@@ -147,9 +152,7 @@ def adaptive_quadrature(f, a, b, n, tol):
                 break
             else:
                 # ADD ONE LEVEL
-                print('Before adding', i)
                 i = i + 1
-                print('After adding', i)
 
                 # DATA FOR RIGHT HALF SUB-INTERVAL
                 A.append(v1 + v5)
@@ -162,9 +165,7 @@ def adaptive_quadrature(f, a, b, n, tol):
                 L.append(v8 + 1)
 
                 # ADD ONE LEVEL
-                print('Before adding', i)
                 i = i + 1
-                print('After adding', i)
 
                 # DATA FOR LEFT HALF SUB-INTERVAL
                 A.append(v1)
@@ -178,3 +179,31 @@ def adaptive_quadrature(f, a, b, n, tol):
 
     # APP APPROXIMATES INTEGRAL TO WITHIN TOL
     return APP
+
+
+# ADAPTIVE QUADRATURE WITH SIMPSONS RULES RECURSIVE VERSION
+# TODO: study the recursive version
+def _quad_simpsons_mem(f, a, fa, b, fb):
+    """Evaluates the Simpson's Rule, also returning m and f(m) to reuse"""
+    m = (a + b) / 2
+    fm = f(m)
+    return (m, fm, abs(b - a) / 6 * (fa + 4 * fm + fb))
+
+def _quad_asr(f, a, fa, b, fb, eps, whole, m, fm):
+    """
+    Efficient recursive implementation of adaptive Simpson's rule.
+    Function values at the start, middle, end of the intervals are retained.
+    """
+    lm, flm, left  = _quad_simpsons_mem(f, a, fa, m, fm)
+    rm, frm, right = _quad_simpsons_mem(f, m, fm, b, fb)
+    delta = left + right - whole
+    if abs(delta) <= 15 * eps:
+        return left + right + delta / 15
+    return _quad_asr(f, a, fa, m, fm, eps/2, left , lm, flm) +\
+           _quad_asr(f, m, fm, b, fb, eps/2, right, rm, frm)
+
+def quad_asr(f, a, b, eps):
+    """Integrate f from a to b using Adaptive Simpson's Rule with max error of eps."""
+    fa, fb = f(a), f(b)
+    m, fm, whole = _quad_simpsons_mem(f, a, fa, b, fb)
+    return _quad_asr(f, a, fa, b, fb, eps, whole, m, fm)

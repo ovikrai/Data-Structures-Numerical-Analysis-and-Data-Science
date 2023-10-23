@@ -10,15 +10,9 @@ class Bag(object):
     def __init__(self):
         self.elements = set()
 
-    def get_item(self, target_element):
-        for element in self.elements:
-            if target_element == element:
-                return element
-            else:
-                return -1
 
     def size(self) -> int:
-        return len(self.elements) - 1
+        return len(self.elements)
 
     def is_empty(self):
         if self.size() == 0:
@@ -26,8 +20,23 @@ class Bag(object):
         else:
             return False
 
-    def add(self, element):
+    def get_element(self, target_element):
+        # SEARCH ELEMENT
+        for element in self.elements:
+            if target_element == element:
+                return element
+            else:
+                return -1
+
+    def add_element(self, element):
         self.elements.add(element)
 
-    def remove(self, element):
+    def remove_element(self, element):
         self.elements.remove(element)
+
+    def render(self):
+        print('########## START: BAG RENDERING REPRESENTATION #########')
+        print('########## | BAG: SIZE', self.size())
+        print('########## |', self.elements)
+        print('########## END: BAG RENDERING REPRESENTATION ######### \n')
+

@@ -7,15 +7,11 @@ from typing import Any, NoReturn
 #   Read:
 #   Write:
 ###############################################
-
 class List(object):
     elements: list
 
     def __init__(self, size: int):
         self.elements = []
-
-    def print(self) -> NoReturn:
-        print(self.elements)
 
     def size(self):
         return len(self.elements)
@@ -52,3 +48,9 @@ class List(object):
 
     def set_one_element(self, index, element: Any) -> NoReturn:
         self.elements.insert(index, element)
+
+    def render(self) -> NoReturn:
+        print('########## START: LIST RENDERING REPRESENTATION #########')
+        print('########## | LIST: SIZE', self.size())
+        print('########## |', self.elements)
+        print('########## END: LIST RENDERING REPRESENTATION ######### \n')
