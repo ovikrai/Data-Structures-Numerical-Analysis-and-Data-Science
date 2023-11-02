@@ -217,15 +217,16 @@ b_I = math.pi
 f = lambda x: (100 / numpy.power(x, 2)) * numpy.sin(10.0 / x)
 a = 1.0
 b = 3.0
-tol = 0.0004
-n = 4
+tol = numpy.power(10.0, -4)
+n = 23
 
 adapt = algos.numerical.diff_integration.quad_asr(f, a, b, tol)
-# adapt = algos.numerical.diff_integration.(f, a, b, n, tol)
-# adapt = scipy.integrate.quadrature(f, a, b)
+print(adapt)
+adapt = algos.numerical.diff_integration.adaptive_quadrature(f, a, b, n, tol)
+print(adapt)
+adapt = scipy.integrate.quadrature(f, a, b)
 
 print(adapt)
-
 
 ###########################################################################
 
