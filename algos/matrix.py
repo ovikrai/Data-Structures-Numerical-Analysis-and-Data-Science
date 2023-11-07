@@ -9,7 +9,7 @@ class Matrix:
     def __int__(self, n: int, s_type='float'):
         self.column_size = n
 
-        # INILIAZITION PROCEDURE
+        # INITIALIZATION PROCEDURE
         for i in range(0, n + 1, 1):
             # Initialize with function provided values
             self.matrix.append([])

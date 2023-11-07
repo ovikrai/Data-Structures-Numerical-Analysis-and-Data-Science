@@ -1,51 +1,127 @@
 from algos.bag import Bag
 from algos.matrix import Matrix
 
+from networkx import Graph, DiGraph
+
 
 # TODO: CHECK IMPLEMENTATION
-class Graph(object):
-    _V: int
-    _E: int
-    _adj: Matrix
+class UndirectedGraph(object):
+    graph: Graph
 
-    def __init__(self, V: int):
-        if V < 0:
-            raise Exception('Number of vertices must be non-negative')
-        self._V = V
-        self._E = 0
-        self._adj = Matrix(V, 'int')
+    # Create the structure
+    def __init__(self):
+        self.graph = Graph()
 
-    def vertex_count(self) -> int:
-        return self._V
+    # Number of nodes or vertices
+    def vertices(self):
+        return self.graph.number_of_nodes()
 
-    def edge_count(self) -> int:
-        return self._E
+    # Number of edges
+    def edges(self):
+        return self.graph.number_of_edges()
 
-    def validate_vertex(self, v: int):
-        if v < 0 or v >= self._V:
-            raise Exception("vertex " + str(v) + " is not between 0 and " + str(self._V - 1))
-
+    # Add edge <v, w> to this graph
     def add_edge(self, v: int, w: int):
-        self.validate_vertex(v)
-        self.validate_vertex(w)
-    # TODO
+        self.graph.add_edge(v, w)
 
+    # vertices adjacent to v
     def adj(self, v: int):
-        self.validate_vertex(v)
-        return self._adj.get_object()
+        self.graph.neighbors(v)
 
-    # TODO: IMPLEMENT
-    # def degree(self, v: int):
-    #     self.validate_vertex(v)
-    #     pass
 
-    def render(self):
-        print('########## START: GRAPH RENDERING REPRESENTATION #########')
-        print('########## | GRAPH:', str(self._V), 'VERTICES,', str(self._E), 'EDGES')
+class DirectedGraph(object):
+    graph: Graph
 
-        for v in range(0, self._V):
-            print('########## | VERTEX:', str(v))
-            for w in self._adj[v].elements:
-                print('########## |---- WITH UNDIRECTED EDGE CONNECTING TO VERTEX:', str(w))
-            print('##########')
-        print('########## END: GRAPH RENDERING REPRESENTATION ######### \n')
+    # Create the structure
+    def __init__(self):
+        self.graph = DiGraph()
+
+    # Number of nodes or vertices
+    def vertices(self):
+        return self.graph.number_of_nodes()
+
+    # Number of edges
+    def edges(self):
+        return self.graph.number_of_edges()
+
+    # Add edge <v, w> to this graph
+    def add_edge(self, v: int, w: int):
+        self.graph.add_edge(v, w)
+
+    # vertices adjacent to v
+    def adj(self, v: int):
+        self.graph.neighbors(v)
+
+
+# TODO: CHECK IMPLEMENTATION AND ADD SPECIFIC AND GENERAL IMPLEMENTATIONS OF GRAPH
+class WeightedEdge:
+    v: int
+    u: int
+    weight: float
+
+    def __int__(self, v: int, u: int, weight: float):
+        self.v = v  # one vertex
+        self.u = u  # the other vertex
+        self.weight = weight
+
+    def get_weight(self):
+        return self.weight
+
+    def either(self):
+        return self.v
+
+    def other(self, vertex: int):
+        if vertex == self.v:
+            return self.u
+        elif vertex == self.u:
+            return self.v
+        else:
+            RuntimeError('Inconsistent Edge')
+
+    def compare_to(self, that):
+        if self.get_weight() < that.get_weight():
+            return -1
+        elif self.get_weight() > that.get_weight():
+            return 1
+        else:
+            return 0
+
+class WeightedGraph:
+    v: int
+    u: int
+    adj: list
+
+    def __int__(self, v: int):
+        self.v = v
+        self.u = 0
+
+        # adjacency list of lists
+        self.adj = [list] * v
+
+    # Number of nodes or vertices
+    def vertices(self):
+        return self.v
+
+    # Number of edges
+    def edges(self):
+        return self.u
+
+    # Add edge <v, w> to this graph
+    def add_edge(self, edge: WeightedEdge):
+        v = edge.either()
+        u = edge.other(v)
+        self.adj[v].append(edge)
+        self.adj[u].append(edge)
+        self.u = self.u + 1
+
+    # list of vertices adjacent to v
+    def adj(self, v: int):
+        return self.adj[v]
+
+    def all_edges(self):
+        bag = []
+        for v in range(0, self.v):
+            for edge in self.adj[v]:
+                if edge.other(v) > v:
+                    bag.append(edge)
+        return bag

@@ -1,18 +1,11 @@
-compile:
-	g++ -Wall -c main.cpp
-	mv ./*.o ./objects
-
-link:
-	g++ -Wall -o ./build/main ./objects/*.o
-
-clean:
-	rm -r ./build/main ./objects/*.o
+install:
+	pip install -r requirements.txt
 
 run:
-	./build/main
+	python ./main.py
 
-build: compile link run
+upgrade-pip:
+	python -m pip install --upgrade pip
 
-
-run-py:
-	python3 main.py
+install-pytorch-gpu:
+	pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
