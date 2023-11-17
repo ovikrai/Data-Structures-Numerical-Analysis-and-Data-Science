@@ -27,11 +27,11 @@ def random_search(search_space: list, n: int):
     for i in range(0, n):
         candidate = {'vector': random_vector(search_space)}
         candidate['cost'] = objetive_function(candidate['vector'])
+        best = candidate
 
         # TODO: CHECK THIS LOGIC
         if best is None or candidate['cost'] < best['cost']:
             print(candidate)
-            best = candidate
             print('iteration = ', i + 1, 'best = ', best['cost'])
 
     return best

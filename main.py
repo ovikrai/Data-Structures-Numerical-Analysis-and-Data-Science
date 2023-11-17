@@ -9,7 +9,6 @@ import algos.search.stochastic.random
 import scipy
 # Structures Imports
 from algos.array import Array
-from algos.list import List
 from algos.graph import Graph
 
 import platform

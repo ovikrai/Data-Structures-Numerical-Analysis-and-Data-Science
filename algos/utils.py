@@ -4,6 +4,9 @@ from typing import Any, List, Tuple
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image
 
 # Types Nulls
 IntNull = 0
@@ -231,3 +234,31 @@ def split(x: np.ndarray, y: np.ndarray, test_size=1 / 3, random_state=0):
         random_state=random_state
     )
     return x_train, x_test, y_train, y_test
+
+
+def load_images(image_path: str):
+    img = image.load_img(image_path)
+    img = image.img_to_array(img)
+    np.expand_dims(img, axis=0)
+    return img
+
+
+def load_images_split(train_path: str, test_path: str):
+    x_train_gen = ImageDataGenerator(rescale=1. / 255,
+                                     shear_range=0.2,
+                                     zoom_range=0.2,
+                                     horizontal_flip=True)
+    x_train = x_train_gen.flow_from_directory(train_path,
+                                              target_size=(64, 64),
+                                              batch_size=32,
+                                              class_mode='binary')
+    x_test_gen = ImageDataGenerator(rescale=1. / 255,
+                                    shear_range=0.2,
+                                    zoom_range=0.2,
+                                    horizontal_flip=True)
+    x_test = x_test_gen.flow_from_directory(test_path,
+                                            target_size=(64, 64),
+                                            batch_size=32,
+                                            class_mode='binary')
+
+    return x_train, x_test

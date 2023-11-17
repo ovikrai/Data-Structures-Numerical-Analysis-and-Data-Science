@@ -5,7 +5,7 @@ from networkx import Graph, DiGraph
 
 
 # TODO: CHECK IMPLEMENTATION
-class UndirectedGraph(object):
+class UndirectedGraph:
     graph: Graph
 
     # Create the structure
@@ -29,7 +29,7 @@ class UndirectedGraph(object):
         self.graph.neighbors(v)
 
 
-class DirectedGraph(object):
+class DirectedGraph:
     graph: Graph
 
     # Create the structure
@@ -53,7 +53,6 @@ class DirectedGraph(object):
         self.graph.neighbors(v)
 
 
-# TODO: CHECK IMPLEMENTATION AND ADD SPECIFIC AND GENERAL IMPLEMENTATIONS OF GRAPH
 class WeightedEdge:
     v: int
     u: int
@@ -76,7 +75,7 @@ class WeightedEdge:
         elif vertex == self.u:
             return self.v
         else:
-            RuntimeError('Inconsistent Edge')
+            raise RuntimeError('Inconsistent Edge')
 
     def compare_to(self, that):
         if self.get_weight() < that.get_weight():
@@ -85,6 +84,7 @@ class WeightedEdge:
             return 1
         else:
             return 0
+
 
 class WeightedGraph:
     v: int
@@ -118,10 +118,64 @@ class WeightedGraph:
     def adj(self, v: int):
         return self.adj[v]
 
-    def all_edges(self):
+    def get_edges(self):
         bag = []
         for v in range(0, self.v):
             for edge in self.adj[v]:
                 if edge.other(v) > v:
                     bag.append(edge)
         return bag
+
+
+class WeightedDirectedEdge:
+    weight: float
+    v: int
+    u: int
+
+    def __init__(self, v: int, u: int, weight: float):
+        self.v = v
+        self.u = u
+        self.weight = weight
+
+    def get_weight(self):
+        return self.weight
+
+    def vertex_from(self):
+        return self.v
+
+    def vertex_to(self):
+        return self.u
+
+
+class WeightedDirectedGraph:
+    v: int
+    u: int
+    adjacency: list
+
+    def __init__(self, v: int):
+        self.v = v
+        self.u = 0
+        self.adj = [list] * v
+
+    def vertices(self):
+        return self.v
+
+    # Number of edges
+    def edges(self):
+        return self.u
+
+    def add_edge(self, edge: WeightedDirectedEdge):
+        self.adjacency[edge.vertex_from()].append(edge)
+        self.u = self.u + 1
+
+    def adj(self, v: int):
+        return self.adjacency[v]
+
+    def get_edges(self):
+        edges = []
+        n = self.v
+        for i in range(0, n):
+            for e in self.adjacency[i]:
+                edges.append(e)
+
+        return edges

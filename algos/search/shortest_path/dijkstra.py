@@ -1,48 +1,80 @@
 import math
 
-from algos.graph import Graph
-from algos.bag import Bag
+from algos.graph import WeightedDirectedEdge, WeightedDirectedGraph
+from algos.priority_queue import PriorityQueue
+from algos.stack import Stack
+from typing import List
 
 
 # ------------------------- Dijkstra's Algorithm ---------------------------- #
 # Shortest Path Search
 # ----------------------------------------------------------------------- #
-# TODO: CHANGE DEGREE FOR THE NEW IMPLEMENTATION OF GRAPH
-class Dijkstra(object):
-    vertex_count: int
-    source_vertex: int
-    dist: list
-    prev: list
-    Q: Bag
+class DijkstraSP:
+    edge_to: List[WeightedDirectedEdge]
+    dist_to: List[float]
+    pq: PriorityQueue
 
-    def __init__(self, G: Graph, source_vertex: int):
-        self.source_vertex = source_vertex
-        self.vertex_count = G.vertex_count()
+    def __init__(self, graph: WeightedDirectedGraph, s: int):
+        self.edge_to = [WeightedDirectedEdge] * graph.vertices()
+        self.dist_to = [float] * graph.vertices()
+        self.pq = [float] * graph.vertices()
 
-        for i in range(0, self.vertex_count):
-            self.dist[i] = math.inf
-            self.prev[i] = False
-            # self.Q.add()
-        self.dist[source_vertex] = 0
+        n = graph.vertices()
+        for i in range(0, n):
+            self.dist_to[i] = math.inf
 
-        while not self.Q.is_empty():
-            u = self.min_dist(self.dist, self.prev)
-            self.Q.remove(u)
-            self.prev[u] = True
+        self.dist_to[s] = 0.0
 
-            for v in range(0, self.vertex_count):
-                if G.degree(v) > 0 and \
-                        self.prev[v] is False and \
-                        self.dist[v] > self.dist[u] + G.degree(v):
-                    self.dist[v] = self.dist[u] + G.degree(v)
+        self.pq.insert(s, 0.0)
 
-    def min_dist(self, dist, prev):
-        min_dist = math.inf
-        min_index = 0
+        while not self.pq.is_empty():
+            self.relax(graph, self.pq.delete(0))
 
-        for v in range(0, self.vertex_count):
-            if dist[v] < min_dist and prev[v] is False:
-                min_dist = dist[v]
-                min_index = v
+    def relax(self, graph: WeightedDirectedGraph, v: int):
+        e: WeightedDirectedEdge
+        for e in graph.adj(v):
+            u = e.vertex_to()
+            if self.dist_to[u] > self.dist_to[v] + e.get_weight():
+                self.dist_to[u] = self.dist_to[v] + e.get_weight()
+                self.edge_to[u] = e
 
-        return min_index
+                if self.pq.contains(u):
+                    self.pq.change(u, self.dist_to[u])
+                else:
+                    self.pq.insert(u, self.dist_to[u])
+
+    def distance_to(self, v: int):
+        return self.dist_to[v]
+
+    def has_path_to(self, v: int) -> bool:
+        return self.dist_to[v] < math.inf
+
+    def path_to(self, v: int):
+        if not self.has_path_to(v):
+            return None
+
+        path = Stack()
+        e: WeightedDirectedEdge = self.edge_to[v]
+
+        while e is not None:
+            path.push(e)
+            e = self.edge_to[e.vertex_from()]
+
+        return path
+
+
+class DijkstraAllPairsSP:
+    all: List[DijkstraSP]
+
+    def __init__(self, graph: WeightedDirectedGraph):
+        n = graph.vertices()
+        self.all = [DijkstraSP] * n
+
+        for i in range(0, n):
+            self.all[i] = DijkstraSP(graph, i)
+
+    def path(self, s: int, t: int):
+        return self.all[s].path_to(t)
+
+    def distance_to(self, s: int, t: int):
+        return self.all[s].distance_to(t)

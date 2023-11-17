@@ -2,7 +2,7 @@ import math
 
 
 # ------------------------- Binary Search ---------------------------- #
-# Search in a unordered List
+# List need to be ordered to this search to work
 #
 # Runtime T(n):
 #   Best: T(n) ~ c
@@ -30,7 +30,6 @@ def binary(a: list, key, left: int, right: int) -> int:
 
 # Alternative binary search over ordered list
 # Created by Hermann Bottenbruch, 1962
-# List need to be ordered to this search to work
 def binary_ordered(a: list, key, left: int, right: int) -> int:
     while left != right:
         mid = math.ceil((left + right) / 2)
