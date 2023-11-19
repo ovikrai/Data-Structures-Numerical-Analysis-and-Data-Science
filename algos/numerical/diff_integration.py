@@ -4,6 +4,7 @@ import math
 import collections
 import scipy
 
+
 # ------------------- COMPOSITE SIMPSONS RULE METHOD ----------------- #
 # To Approximate the integral I of function f
 # ------------- INPUT --------------- #
@@ -85,13 +86,13 @@ def adaptive_quadrature(f, a, b, n, tol, m=20):
     APP = 0.0
 
     TOL = []
-    A   = []
-    H   = []
-    FA  = []
-    FC  = []
-    FB  = []
-    S   = []
-    L   = []
+    A = []
+    H = []
+    FA = []
+    FC = []
+    FB = []
+    S = []
+    L = []
 
     i = 0
     TOL.append(0)
@@ -135,9 +136,8 @@ def adaptive_quadrature(f, a, b, n, tol, m=20):
         v7 = S[i]
         v8 = L[i]
 
-        print('variables: ',i,v1,v2,v3,v4,v5,v6,v7,v8)
+        print('variables: ', i, v1, v2, v3, v4, v5, v6, v7, v8)
         print('APP, STEP 3:', APP)
-
 
         # STEP 4: DELETE THE LEVEL
         i = i - 1
@@ -165,7 +165,6 @@ def adaptive_quadrature(f, a, b, n, tol, m=20):
                 S.append(S2)
                 L.append(v8 + 1)
 
-
                 # DATA FOR LEFT HALF SUB-INTERVAL
                 # ADD ONE LEVEL
                 i = i + 1
@@ -174,11 +173,9 @@ def adaptive_quadrature(f, a, b, n, tol, m=20):
                 FC.append(FD)
                 FB.append(v3)
                 H.append(H[i - 1])
-                TOL.append(TOL[i -1])
+                TOL.append(TOL[i - 1])
                 S.append(S1)
                 L.append(L[i - 1])
-
-
 
     # APP APPROXIMATES INTEGRAL TO WITHIN TOL
     return APP
@@ -192,21 +189,38 @@ def _quad_simpsons_mem(f, a, fa, b, fb):
     fm = f(m)
     return (m, fm, abs(b - a) / 6 * (fa + 4 * fm + fb))
 
+
 def _quad_asr(f, a, fa, b, fb, eps, whole, m, fm):
     """
     Efficient recursive implementation of adaptive Simpson's rule.
     Function values at the start, middle, end of the intervals are retained.
     """
-    lm, flm, left  = _quad_simpsons_mem(f, a, fa, m, fm)
+    lm, flm, left = _quad_simpsons_mem(f, a, fa, m, fm)
     rm, frm, right = _quad_simpsons_mem(f, m, fm, b, fb)
     delta = left + right - whole
     if abs(delta) <= 15 * eps:
         return left + right + delta / 15
-    return _quad_asr(f, a, fa, m, fm, eps/2, left , lm, flm) +\
-           _quad_asr(f, m, fm, b, fb, eps/2, right, rm, frm)
+    return _quad_asr(f, a, fa, m, fm, eps / 2, left, lm, flm) + \
+        _quad_asr(f, m, fm, b, fb, eps / 2, right, rm, frm)
+
 
 def quad_asr(f, a, b, eps):
     """Integrate f from a to b using Adaptive Simpson's Rule with max error of eps."""
     fa, fb = f(a), f(b)
     m, fm, whole = _quad_simpsons_mem(f, a, fa, b, fb)
     return _quad_asr(f, a, fa, b, fb, eps, whole, m, fm)
+
+
+# ------------- SIMPSON DOUBLE INTEGRAL ---------------------#
+def simpson_double_integral(f, a: float, b: float, m: int, n: int):
+    pass
+
+
+# ------------- GAUSSIAN DOUBLE INTEGRAL ---------------------#
+def gaussian_double_integral(f, a: float, b: float, m: int, n: int):
+    pass
+
+
+# ------------- GAUSSIAN DOUBLE INTEGRAL ---------------------#
+def gaussian_triple_integral(f, a: float, b: float, m: int, n: int, p: int):
+    pass
