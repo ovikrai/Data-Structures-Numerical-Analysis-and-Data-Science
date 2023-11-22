@@ -3,6 +3,7 @@ import numpy
 import math
 import collections
 import scipy
+from typing import Callable, List
 
 
 # ------------------- COMPOSITE SIMPSONS RULE METHOD ----------------- #
@@ -212,15 +213,114 @@ def quad_asr(f, a, b, eps):
 
 
 # ------------- SIMPSON DOUBLE INTEGRAL ---------------------#
-def simpson_double_integral(f, a: float, b: float, m: int, n: int):
-    pass
+def simpson_double_integral(f: Callable[[float, float], float],
+                            a: float, b: float,
+                            c: float, d: float,
+                            m: int, n: int):
+    h = (b - a) / n
+    J_1 = 0
+    J_2 = 0
+    J_3 = 0
+
+    for i in range(0, n):
+        x = a + (i * h)
+        HX = (d - c)/m
+        K_1 = f(x, c) + f(x, d)
+        K_2 = 0
+        K_3 = 0
+
+        for j in range(1, m - 1):
+            y = c + (j * HX)
+            Q = f(x, y)
+
+            if j % 2 != 0:
+                K_2 = K_2 + Q
+            else:
+                K_3 = K_3 + Q
+
+        L = (K_1 + 2*K_2 + 4*K_3) * (HX / 3)
+
+        if i = 0 or i = n:
+            J_1 = J_1 + L
+        elif i % 2 != 0:
+            J_2 = J_2 + L
+        else:
+            J_3 = J_3 + L
+
+    J = h * (J_1 + 2*J_2 + 4*J_3) / 3
+    return J
+
 
 
 # ------------- GAUSSIAN DOUBLE INTEGRAL ---------------------#
-def gaussian_double_integral(f, a: float, b: float, m: int, n: int):
-    pass
+def gaussian_double_integral(f: Callable[[float, float], float], a: float, b: float,
+        c: Callable[[float], float],
+        d: Callable[[float], float],
+        m: int, n: int,
+        roots: List[list], coeffs: List[list]):
+
+    h_1 = (b - a)/2
+    h_2 = (b + a)/2
+    J = 0
+
+    for i range(1, m):
+        JX = 0
+        x = h_1 * roots[m][i] + h_2
+        d_1 = d(x)
+        c_1 = c(x)
+        k_1 = (d_1 - c_1) / 2
+        k_2 = (d_1 + c_1) / 2
+
+        for j in range(1, n):
+            y = k_1 * roots[n][j] + k_2
+            Q = f(x, y)
+            JX = JX + coeffs[n][j] * Q
+
+        J = J + coeffs[m][i] * k_1 * JX
+
+    J = h_1 * J
+    return J
 
 
-# ------------- GAUSSIAN DOUBLE INTEGRAL ---------------------#
-def gaussian_triple_integral(f, a: float, b: float, m: int, n: int, p: int):
-    pass
+# ------------- GAUSSIAN TRIPLE INTEGRAL ---------------------#
+def gaussian_triple_integral(f: Callable[[float, float, float], float],
+                a: float, b: float,
+                c: Callable[[float], float],
+                d: Callable[[float], float],
+                alpha: Callable[[float, float], float]
+                beta: Callable[[float, float], float],
+                roots: List[list], coeffs: List[list]
+                m: int, n: int, p: int):
+    h_1 = (b - a) / 2
+    h_2 = (b + a) / 2
+    J = 0
+
+    for i in range(1, m):
+        JX = 0
+        x = h_1* roots[m][i] + h_2
+        d_1 = d(x)
+        c_1 = c(x)
+        k_1 = (d_1 - c_1) / 2
+        k_2 = (d_1 + c_2) / 2
+
+        for j in range(1, n):
+            JY = 0
+            y = k_1 * roots[n][j] + k_2
+            beta_1 = beta(x, y)
+            alpha_1 = alpha(x, y)
+            l_1 = (beta_1 - alpha_1) / 2
+            l_2 = (beta_2 + alpha_1) / 2
+
+            for k in range(1, p):
+                z = l_1 * roots[p][k] + l_2
+                Q = f(x, y, z)
+                JY = JY + coeffs[p][k] * Q
+
+            JX = JX + coeffs[n][j] * l_1 * JY
+
+        J = J + coeffs[m][i] * k_1 * JX
+
+    J = h_1*J
+
+    return J
+
